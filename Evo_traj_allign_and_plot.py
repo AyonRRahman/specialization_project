@@ -42,7 +42,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
     res = estimation_dataset_dir.split('/')[-1]
     # print(res)
     # return
-    data='Visual Slam'
+    data='Visual-Inertial Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
     if data=='Visual-Inertial Slam':
@@ -84,7 +84,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
 
 
 def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results',data='Visual-Inertial Slam'):
-    data='Visual Slam'
+    data='Visual-Inertial Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
     if data=='Visual-Inertial Slam':
@@ -126,43 +126,8 @@ if __name__=="__main__":
     # plot_all_dataset()
     error_all_dataset(estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results')
 
-    # est="trajectories/f_varos_enlighten_gan_run3.txt",
-    # traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(gt="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", est="/home/ayon/git/Thesis_data/trajectories/visual_inertial/CameraTrajectory_with_loop.txt",correct_scale=False)
-    # traj_est2, traj_ref2, traj_ref_assoc2 = load_and_allign_traj(gt="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", est="/home/ayon/git/Thesis_data/trajectories/visual_inertial/f_varos_enlighten_gan_run2_bad_loop.txt",correct_scale=False)
 
     
-    # xyz_ref = traj_ref._positions_xyz
-    # xyz_est = traj_est._positions_xyz
-    # xyz_est2 = traj_est2._positions_xyz
-
-    
-    # gt = np.array([xyz_ref[:,0],xyz_ref[:,1],xyz_ref[:,2]]).T
-    # est = np.array([xyz_est[:,0],xyz_est[:,1], xyz_est[:,2]]).T
-    # est2 = np.array([xyz_est2[:,0],xyz_est2[:,1], xyz_est2[:,2]]).T
-
-    
-    # plot = plot2D_all(gt, {'with loop':est, 'without loop':est2})
-    # plot.savefig('/home/ayon/git/Thesis_data/plots/2d_loop_comparision.jpg', format='jpg', dpi=300, bbox_inches='tight')
-
-    # plot = plot3D_all(gt, {'with loop':est, 'without loop':est2}) 
-    # plot.savefig('/home/ayon/git/Thesis_data/plots/3d_loop_comparision.jpg', format='jpg', dpi=300, bbox_inches='tight')
-    
-    # plot.show()
-    # ape_statistics, rpe_statistics = calculate_statistics(traj_ref_assoc, traj_est, print_stat=True)
-    
-    
-    # df = pd.DataFrame(ape_statistics,index=['ape'])
-    # df = df.append(pd.Series(rpe_statistics, name='rpe'))
-
-    # print(df.head())
-    # ape_statistics, rpe_statistics
-    # plt = show_3d_plot_with_gt(est, gt)
-    # plt = show_views_together(est, gt)
-    # plt = show_3d_plot_same_figure(est,gt)
-    
-    # plt = show_views_together_same_figure(est, gt)
-    # plt.show()
-
 
 
 
