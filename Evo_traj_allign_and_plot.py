@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
-from trajectory_plot import show_3d_plot_with_gt, show_views_together, show_3d_plot_same_figure,show_views_together_same_figure
+import os
+from trajectory_plot import show_3d_plot_with_gt, show_views_together, show_3d_plot_same_figure,show_views_together_same_figure, plot2D_all, plot3D_all,plot2D_xy
 
 from evo.core import trajectory, sync, metrics
 from evo.tools import file_interface
 
-def load_and_allign_traj(gt="trajectories/groundtruth.txt", est="trajectories/visual_inertial/CameraTrajectory_with_loop.txt",correct_scale=False):
+def load_and_allign_traj(gt="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", est="/home/ayon/git/Thesis_data/trajectories/visual_inertial/CameraTrajectory_with_loop.txt",correct_scale=False):
     print("loading trajectories")
     traj_ref = file_interface.read_tum_trajectory_file(gt)
     traj_est = file_interface.read_tum_trajectory_file(est)
@@ -36,23 +38,123 @@ def calculate_statistics(traj_ref, traj_est, print_stat=True):
     
     return ape_statistics, rpe_statistics
 
-if __name__=="__main__":
-    # est="trajectories/f_varos_enlighten_gan_run3.txt",
-    traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(correct_scale=False)
+def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results',data='Visual-Inertial Slam'):
+    res = estimation_dataset_dir.split('/')[-1]
+    # print(res)
+    # return
+    data='Visual Slam'
+    files_list = sorted(os.listdir(estimation_dataset_dir))
+    plot_dictionary = {}
+    if data=='Visual-Inertial Slam':
+        correct_scale = False
+    else:
+        correct_scale = True
+
+    rpe_df = pd.DataFrame()
+    ape_df = pd.DataFrame()
+
+    for files in files_list:
+        if files[-3:]=='csv':
+            continue
+        
+        if 'kf' in files:
+            continue
+        
+        if not data in files:
+            continue
+
+        name = files.split('_')[-2]
+        traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(gt=gt_direcory, est=os.path.join(estimation_dataset_dir, files),correct_scale=correct_scale)
+        ape_statistics, rpe_statistics = calculate_statistics(traj_ref_assoc, traj_est, print_stat=True)
+        
+        # print(traj_est._positions_xyz.shape[0])
+        # print(ape_statistics, )
+        ape_statistics['num_f'] = traj_est._positions_xyz.shape[0]
+        rpe_statistics['num_f'] = traj_est._positions_xyz.shape[0]
+
+    
+        rpe_df = rpe_df.append(pd.Series(rpe_statistics, name=f'{name}'))
+        ape_df = ape_df.append(pd.Series(ape_statistics, name=f'{name}'))
+
+    # print(rpe_df)
+    rpe_df.to_csv(f'/home/ayon/git/Thesis_data/plots/rpe_{data}_{res}.csv')
+    ape_df.to_csv(f'/home/ayon/git/Thesis_data/plots/ape_{data}_{res}.csv')
+
+        
+
+
+def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results',data='Visual-Inertial Slam'):
+    data='Visual Slam'
+    files_list = sorted(os.listdir(estimation_dataset_dir))
+    plot_dictionary = {}
+    if data=='Visual-Inertial Slam':
+        correct_scale = False
+    else:
+        correct_scale = True
+
+    for files in files_list:
+        if files[-3:]=='csv':
+            continue
+        
+        if 'kf' in files:
+            continue
+        
+        if not data in files:
+            continue
+
+        name = files.split('_')[-2]
+        traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(gt=gt_direcory, est=os.path.join(estimation_dataset_dir, files),correct_scale=correct_scale)
+        xyz_est = traj_est._positions_xyz
+        est = np.array([xyz_est[:,0],xyz_est[:,1], xyz_est[:,2]]).T
+        plot_dictionary[name] = est
     
     xyz_ref = traj_ref._positions_xyz
-    xyz_est = traj_est._positions_xyz
-    
-    gt = [xyz_ref[:,0],xyz_ref[:,1],xyz_ref[:,2]]
-    est = [xyz_est[:,0],xyz_est[:,1], xyz_est[:,2]]
-    
-    ape_statistics, rpe_statistics = calculate_statistics(traj_ref_assoc, traj_est, print_stat=True)
-    
-    
-    df = pd.DataFrame(ape_statistics,index=['ape'])
-    df = df.append(pd.Series(rpe_statistics, name='rpe'))
+    gt = np.array([xyz_ref[:,0],xyz_ref[:,1],xyz_ref[:,2]]).T
 
-    print(df.head())
+    plot = plot2D_xy(gt, plot_dictionary)
+    # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_2d_plot_XY_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
+
+    # plot = plot2D_all(gt, plot_dictionary)
+    # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_2d_plot_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
+
+    # plot = plot3D_all(gt, plot_dictionary)
+    # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_3d_plot_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
+    
+    plot.show()
+
+if __name__=="__main__":
+    # plot_all_dataset()
+    error_all_dataset(estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results')
+
+    # est="trajectories/f_varos_enlighten_gan_run3.txt",
+    # traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(gt="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", est="/home/ayon/git/Thesis_data/trajectories/visual_inertial/CameraTrajectory_with_loop.txt",correct_scale=False)
+    # traj_est2, traj_ref2, traj_ref_assoc2 = load_and_allign_traj(gt="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", est="/home/ayon/git/Thesis_data/trajectories/visual_inertial/f_varos_enlighten_gan_run2_bad_loop.txt",correct_scale=False)
+
+    
+    # xyz_ref = traj_ref._positions_xyz
+    # xyz_est = traj_est._positions_xyz
+    # xyz_est2 = traj_est2._positions_xyz
+
+    
+    # gt = np.array([xyz_ref[:,0],xyz_ref[:,1],xyz_ref[:,2]]).T
+    # est = np.array([xyz_est[:,0],xyz_est[:,1], xyz_est[:,2]]).T
+    # est2 = np.array([xyz_est2[:,0],xyz_est2[:,1], xyz_est2[:,2]]).T
+
+    
+    # plot = plot2D_all(gt, {'with loop':est, 'without loop':est2})
+    # plot.savefig('/home/ayon/git/Thesis_data/plots/2d_loop_comparision.jpg', format='jpg', dpi=300, bbox_inches='tight')
+
+    # plot = plot3D_all(gt, {'with loop':est, 'without loop':est2}) 
+    # plot.savefig('/home/ayon/git/Thesis_data/plots/3d_loop_comparision.jpg', format='jpg', dpi=300, bbox_inches='tight')
+    
+    # plot.show()
+    # ape_statistics, rpe_statistics = calculate_statistics(traj_ref_assoc, traj_est, print_stat=True)
+    
+    
+    # df = pd.DataFrame(ape_statistics,index=['ape'])
+    # df = df.append(pd.Series(rpe_statistics, name='rpe'))
+
+    # print(df.head())
     # ape_statistics, rpe_statistics
     # plt = show_3d_plot_with_gt(est, gt)
     # plt = show_views_together(est, gt)

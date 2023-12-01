@@ -7,6 +7,245 @@ import numpy as np
 # Set the figure size globally
 plt.rcParams["figure.figsize"] = 12.8, 9.6
 
+
+def plot3D_all(ground_truth, estimated_trajectories):
+    """
+    Plot ground truth and estimated trajectories in 3D.
+
+    Parameters:
+        ground_truth (numpy.ndarray): Array of shape (n, 3) representing ground truth trajectory.
+        estimated_trajectories (dict): Dictionary where keys are names and values are arrays of shape (m, 3)
+                                       representing estimated trajectories.
+
+    Returns:
+        None (displays the plot).
+
+    Example:
+        ground_truth = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+        estimated_trajectories = {'Estimation 1': np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+                                   'Estimation 2': np.array([[0, 0, 0], [1, 0, -1], [2, 2, 0]])}
+
+        plot3D_all(ground_truth, estimated_trajectories)
+        plt.show()
+    """
+    # Create 3D plot
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Plot ground truth trajectory
+    ax.plot(ground_truth[:, 0], ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth', color='blue')
+
+    # Define a colormap with distinct colors for each trajectory
+    colormap = plt.cm.get_cmap('viridis', len(estimated_trajectories) + 1)
+
+    # Plot estimated trajectories
+    for index, (name, trajectory) in enumerate(estimated_trajectories.items()):
+        color = colormap(index**2 / len(estimated_trajectories)**2)
+        ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], label=name, color=color)
+
+        # Scatter plot for the start point
+        if index == len(estimated_trajectories) - 1:
+            ax.scatter(trajectory[0, 0], trajectory[0, 1], trajectory[0, 2], s=100, c='red', label='Start')
+        else:
+            ax.scatter(trajectory[0, 0], trajectory[0, 1], trajectory[0, 2], s=100, c='red')
+
+    # Set labels and legend
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('3D Trajectory Plot')
+    ax.legend()
+
+    # Display the plot
+    return plt
+    # plt.show()
+# def plot3D_all(ground_truth, estimated_trajectories):
+#     """
+#     Plot ground truth and estimated trajectories in 3D.
+
+#     Parameters:
+#         ground_truth (numpy.ndarray): Array of shape (n, 3) representing ground truth trajectory.
+#         estimated_trajectories (dict): Dictionary where keys are names and values are arrays of shape (m, 3)
+#                                        representing estimated trajectories.
+
+#     Returns:
+#         None (displays the plot).
+
+#     Example:
+#         ground_truth = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+#         estimated_trajectories = {'Estimation 1': np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+#                                    'Estimation 2': np.array([[0, 0, 0], [1, 0, -1], [2, 2, 0]])}
+
+#         plot3D_all(ground_truth, estimated_trajectories)
+#         plt.show()
+#     """
+#     # Create 3D plot
+#     fig = plt.figure(figsize=(10, 8))
+#     ax = fig.add_subplot(111, projection='3d')
+
+#     # Plot ground truth trajectory
+#     ax.plot(ground_truth[:, 0], ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
+
+#     # Plot estimated trajectories
+#     for index,(name, trajectory) in enumerate(estimated_trajectories.items()):
+#         ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], label=name)
+
+#         # Scatter plot for the start point
+#         if index==len(estimated_trajectories)-1:
+#             ax.scatter(trajectory[0, 0], trajectory[0, 1], trajectory[0, 2], s=100, c='red', label='Start')
+#         else:
+#             ax.scatter(trajectory[0, 0], trajectory[0, 1], trajectory[0, 2], s=100, c='red')
+
+#     # Set labels and legend
+#     ax.set_xlabel('X')
+#     ax.set_ylabel('Y')
+#     ax.set_zlabel('Z')
+#     ax.set_title('3D Trajectory Plot')
+#     ax.legend()
+
+#     # Display the plot
+#     return plt
+#     # plt.show()
+
+
+def plot2D_xy(ground_truth, estimated_trajectories):
+    """
+    Plot ground truth and estimated trajectories in xy, yz, and zx views.
+
+    Parameters:
+        ground_truth (numpy.ndarray): Array of shape (n, 3) representing ground truth trajectory.
+        estimated_trajectories (dict): Dictionary where keys are names and values are arrays of shape (m, 3)
+                                       representing estimated trajectories.
+
+    Returns:
+        None (displays the plot).
+
+    Example:
+        ground_truth = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+        estimated_trajectories = {'Estimation 1': np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+                                   'Estimation 2': np.array([[0, 0, 0], [1, 0, -1], [2, 2, 0]])}
+
+        plot_trajectories(ground_truth, estimated_trajectories)
+        plt.show()
+    """
+    # Create subplots
+    fig, axs = plt.subplots(1, 1, figsize=(15, 5))
+    
+    # Plot gt views
+    # axs.plot(ground_truth[:, 0], ground_truth[:, 1], label='Ground Truth')
+    # axs[1].plot(ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
+    # axs[2].plot(ground_truth[:, 2], ground_truth[:, 0], label='Ground Truth')
+    estimated_trajectories['Ground Truth'] = ground_truth
+    colormap = plt.cm.get_cmap('tab20', len(estimated_trajectories) + 1)
+    
+    #plot estimated views
+    for index,(name, trajectory) in enumerate(estimated_trajectories.items()):
+        color = colormap(index**2 / len(estimated_trajectories)**2)
+        
+        axs.plot(trajectory[:, 0], trajectory[:, 1], label=name, color=color)
+        # axs[1].plot(trajectory[:, 1], trajectory[:, 2], label=name)
+        # axs[2].plot(trajectory[:, 2], trajectory[:, 0], label=name)
+
+        if index==len(estimated_trajectories)-1:
+            axs.scatter(trajectory[0, 0], trajectory[0, 1],s=100,c='red', label='start')
+            # axs[1].scatter(trajectory[0, 1], trajectory[0, 2],s=100,c='red', label='start')
+            # axs[2].scatter(trajectory[0, 2], trajectory[0, 0],s=100,c='red', label='start')
+        else:
+            axs.scatter(trajectory[0, 0], trajectory[0, 1],s=100,c='red')
+            # axs[1].scatter(trajectory[0, 1], trajectory[0, 2],s=100,c='red')
+            # axs[2].scatter(trajectory[0, 2], trajectory[0, 0],s=100,c='red')
+
+
+
+    axs.set_title('XY View')
+    axs.set_xlabel('X')
+    axs.set_ylabel('Y')
+    axs.legend()
+
+    
+    # Set common labels
+    
+    # Display the plot
+    return plt
+
+
+def plot2D_all(ground_truth, estimated_trajectories):
+    """
+    Plot ground truth and estimated trajectories in xy, yz, and zx views.
+
+    Parameters:
+        ground_truth (numpy.ndarray): Array of shape (n, 3) representing ground truth trajectory.
+        estimated_trajectories (dict): Dictionary where keys are names and values are arrays of shape (m, 3)
+                                       representing estimated trajectories.
+
+    Returns:
+        None (displays the plot).
+
+    Example:
+        ground_truth = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+        estimated_trajectories = {'Estimation 1': np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+                                   'Estimation 2': np.array([[0, 0, 0], [1, 0, -1], [2, 2, 0]])}
+
+        plot_trajectories(ground_truth, estimated_trajectories)
+        plt.show()
+    """
+    # Create subplots
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Plot gt views
+    axs[0].plot(ground_truth[:, 0], ground_truth[:, 1], label='Ground Truth')
+    axs[1].plot(ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
+    axs[2].plot(ground_truth[:, 2], ground_truth[:, 0], label='Ground Truth')
+    estimated_trajectories['Ground Truth'] = ground_truth
+    #plot estimated views
+    for index,(name, trajectory) in enumerate(estimated_trajectories.items()):
+        axs[0].plot(trajectory[:, 0], trajectory[:, 1], label=name)
+        axs[1].plot(trajectory[:, 1], trajectory[:, 2], label=name)
+        axs[2].plot(trajectory[:, 2], trajectory[:, 0], label=name)
+
+        if index==len(estimated_trajectories)-1:
+            axs[0].scatter(trajectory[0, 0], trajectory[0, 1],s=100,c='red', label='start')
+            axs[1].scatter(trajectory[0, 1], trajectory[0, 2],s=100,c='red', label='start')
+            axs[2].scatter(trajectory[0, 2], trajectory[0, 0],s=100,c='red', label='start')
+        else:
+            axs[0].scatter(trajectory[0, 0], trajectory[0, 1],s=100,c='red')
+            axs[1].scatter(trajectory[0, 1], trajectory[0, 2],s=100,c='red')
+            axs[2].scatter(trajectory[0, 2], trajectory[0, 0],s=100,c='red')
+
+
+
+    axs[0].set_title('XY View')
+    axs[0].set_xlabel('X')
+    axs[0].set_ylabel('Y')
+    axs[0].legend()
+
+    # Plot yz view
+    # for name, trajectory in estimated_trajectories.items():
+    axs[1].set_title('YZ View')
+    axs[1].set_xlabel('Y')
+    axs[1].set_ylabel('Z')
+    axs[1].legend()
+
+    # Plot zx view
+    # for name, trajectory in estimated_trajectories.items():
+    axs[2].set_title('ZX View')
+    axs[2].set_xlabel('Z')
+    axs[2].set_ylabel('X')
+    axs[2].legend()
+
+    # Set common labels
+    
+    # Display the plot
+    return plt
+
+# # Example usage:
+# ground_truth = np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+# estimated_trajectories = {'Estimation 1': np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]]),
+#                            'Estimation 2': np.array([[0, 0, 0], [1, 0, -1], [2, 2, 0]])}
+
+# plot_trajectories(ground_truth, estimated_trajectories)
+
+
 def show_3d_plot_same_figure(trajectory, ground_truth):
     """
     Display a 3D plot with the estimated trajectory and ground truth trajectory side by side.
