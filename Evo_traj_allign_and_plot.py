@@ -42,7 +42,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
     res = estimation_dataset_dir.split('/')[-1]
     # print(res)
     # return
-    data='Visual-Inertial Slam'
+    data='Visual Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
     if data=='Visual-Inertial Slam':
@@ -77,6 +77,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
         ape_df = ape_df.append(pd.Series(ape_statistics, name=f'{name}'))
 
     # print(rpe_df)
+    print(f'/home/ayon/git/Thesis_data/plots/rpe_{data}_{res}.csv')
     rpe_df.to_csv(f'/home/ayon/git/Thesis_data/plots/rpe_{data}_{res}.csv')
     ape_df.to_csv(f'/home/ayon/git/Thesis_data/plots/ape_{data}_{res}.csv')
 
@@ -84,7 +85,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
 
 
 def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results',data='Visual-Inertial Slam'):
-    data='Visual-Inertial Slam'
+    data='Visual Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
     if data=='Visual-Inertial Slam':
