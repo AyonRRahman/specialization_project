@@ -33,15 +33,15 @@ def plot3D_all(ground_truth, estimated_trajectories):
     ax = fig.add_subplot(111, projection='3d')
 
     # Plot ground truth trajectory
-    ax.plot(ground_truth[:, 0], ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth', color='blue')
-
+    # ax.plot(ground_truth[:, 0], ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
+    estimated_trajectories['Ground Truth']=ground_truth
     # Define a colormap with distinct colors for each trajectory
-    colormap = plt.cm.get_cmap('viridis', len(estimated_trajectories) + 1)
+    # colormap = plt.cm.get_cmap('viridis', len(estimated_trajectories) + 1)
 
     # Plot estimated trajectories
     for index, (name, trajectory) in enumerate(estimated_trajectories.items()):
-        color = colormap(index**2 / len(estimated_trajectories)**2)
-        ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], label=name, color=color)
+        # color = colormap(index**2 / len(estimated_trajectories)**2)
+        ax.plot(trajectory[:, 0], trajectory[:, 1], trajectory[:, 2], label=name)
 
         # Scatter plot for the start point
         if index == len(estimated_trajectories) - 1:
@@ -193,9 +193,9 @@ def plot2D_all(ground_truth, estimated_trajectories):
     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
 
     # Plot gt views
-    axs[0].plot(ground_truth[:, 0], ground_truth[:, 1], label='Ground Truth')
-    axs[1].plot(ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
-    axs[2].plot(ground_truth[:, 2], ground_truth[:, 0], label='Ground Truth')
+    # axs[0].plot(ground_truth[:, 0], ground_truth[:, 1], label='Ground Truth')
+    # axs[1].plot(ground_truth[:, 1], ground_truth[:, 2], label='Ground Truth')
+    # axs[2].plot(ground_truth[:, 2], ground_truth[:, 0], label='Ground Truth')
     estimated_trajectories['Ground Truth'] = ground_truth
     #plot estimated views
     for index,(name, trajectory) in enumerate(estimated_trajectories.items()):

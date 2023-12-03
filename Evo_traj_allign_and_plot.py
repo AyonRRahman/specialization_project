@@ -84,7 +84,9 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
         
 
 
-def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results',data='Visual-Inertial Slam'):
+def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results1',data='Visual-Inertial Slam'):
+
+
     data='Visual Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
@@ -104,28 +106,36 @@ def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/ground
             continue
 
         name = files.split('_')[-2]
+        if  not (name == 'MH04' or name=='MH01'):
+
+            continue
+
         traj_est, traj_ref, traj_ref_assoc = load_and_allign_traj(gt=gt_direcory, est=os.path.join(estimation_dataset_dir, files),correct_scale=correct_scale)
         xyz_est = traj_est._positions_xyz
+        
         est = np.array([xyz_est[:,0],xyz_est[:,1], xyz_est[:,2]]).T
+        print(name)
+        print(est.shape)
         plot_dictionary[name] = est
     
     xyz_ref = traj_ref._positions_xyz
     gt = np.array([xyz_ref[:,0],xyz_ref[:,1],xyz_ref[:,2]]).T
 
-    plot = plot2D_xy(gt, plot_dictionary)
+    # plot = plot2D_xy(gt, plot_dictionary)
     # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_2d_plot_XY_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
 
-    # plot = plot2D_all(gt, plot_dictionary)
+    plot = plot2D_all(gt, plot_dictionary)
     # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_2d_plot_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
 
-    # plot = plot3D_all(gt, plot_dictionary)
+    plot = plot3D_all(gt, plot_dictionary)
     # plot.savefig(f'/home/ayon/git/Thesis_data/plots/all_3d_plot_{data}.jpg', format='jpg',dpi=300, bbox_inches='tight')
     
     plot.show()
 
 if __name__=="__main__":
-    # plot_all_dataset()
-    error_all_dataset(estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results')
+    # plot_all_dataset(estimation_dataset_dir='/home/ayon/git/Thesis_data/good_and_bad_results_for_plot/good')
+    plot_all_dataset()
+    # error_all_dataset(estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results')
 
 
     
