@@ -87,7 +87,7 @@ def error_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groun
 def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/groundtruth.txt", estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results1',data='Visual-Inertial Slam'):
 
 
-    data='Visual Slam'
+    data='Visual-Inertial Slam'
     files_list = sorted(os.listdir(estimation_dataset_dir))
     plot_dictionary = {}
     if data=='Visual-Inertial Slam':
@@ -134,7 +134,7 @@ def plot_all_dataset(gt_direcory="/home/ayon/git/Thesis_data/trajectories/ground
 
 if __name__=="__main__":
     # plot_all_dataset(estimation_dataset_dir='/home/ayon/git/Thesis_data/good_and_bad_results_for_plot/good')
-    plot_all_dataset()
+    plot_all_dataset(estimation_dataset_dir='')
     # error_all_dataset(estimation_dataset_dir='/home/ayon/git/orbslam3_docker/Datasets/Run_orbslam3/Results')
 
 
